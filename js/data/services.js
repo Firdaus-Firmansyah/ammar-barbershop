@@ -2,6 +2,11 @@
    DATA — Services Catalog
    ======================================== */
 
+/**
+ * Array yang berisi katalog layanan/service yang tersedia di Barbershop.
+ * Setiap layanan mencakup nama, harga, ikon, durasi, dan gambar.
+ * @type {Array<Object>}
+ */
 export const services = [
   {
     id: 'haircut',

@@ -2,6 +2,10 @@
    DATA — Hair Products
    ======================================== */
 
+/**
+ * Array berisi data produk hair-care yang dijual (tampil di Landing Page).
+ * @type {Array<Object>}
+ */
 export const products = [
   {
     id: 'deep-smoothing-serum',
@@ -56,6 +60,11 @@ export const products = [
   },
 ];
 
+/**
+ * Array berisi produk tambahan (upsell) yang direkomendasikan
+ * pada halaman Checkout.
+ * @type {Array<Object>}
+ */
 export const upsellProducts = [
   {
     id: 'hair-styling-powder',

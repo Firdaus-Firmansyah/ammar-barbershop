@@ -2,12 +2,22 @@
    SHARED COMPONENTS — Ammar Barbershop
    ======================================== */
 
+/**
+ * Menghasilkan elemen gambar Logo Ammar Barbershop.
+ * @param {number} height - Tinggi logo dalam pixel.
+ * @returns {string} String HTML untuk logo.
+ */
 export function createLogo(height = 60) {
   return `
     <img src="/Image/Logo ammar barbershop.png" alt="Ammar Barbershop Logo" height="${height}" style="height: ${height}px; object-fit: contain;" />
   `;
 }
 
+/**
+ * Menghasilkan UI Progress Bar untuk menunjukkan langkah booking.
+ * @param {number} currentStep - Indeks langkah saat ini (0: Service, 1: Barber, 2: Jadwal, 3: Checkout).
+ * @returns {string} String HTML progress bar.
+ */
 export function createProgressBar(currentStep) {
   const steps = ['Service', 'Barber', 'Jadwal', 'Checkout'];
   return `
@@ -24,6 +34,11 @@ export function createProgressBar(currentStep) {
   `;
 }
 
+/**
+ * Menghasilkan tombol "Kembali" yang menggunakan History API browser.
+ * @param {string} text - Teks pada tombol (default: 'Kembali').
+ * @returns {string} String HTML button.
+ */
 export function createBackButton(text = 'Kembali') {
   return `
     <button class="back-btn" onclick="history.back()">
@@ -35,6 +50,12 @@ export function createBackButton(text = 'Kembali') {
   `;
 }
 
+/**
+ * Menghasilkan komponen Bintang Rating berdasarkan nilai rating.
+ * @param {number} rating - Nilai rating (contoh: 4.5).
+ * @param {string} size - Ukuran bintang ('sm' atau 'lg').
+ * @returns {string} String HTML komponen rating bintang.
+ */
 export function createStars(rating, size = 'sm') {
   const full = Math.floor(rating);
   const half = rating % 1 >= 0.5 ? 1 : 0;
@@ -49,6 +70,11 @@ export function createStars(rating, size = 'sm') {
   `;
 }
 
+/**
+ * Menghasilkan komponen navigasi (Navbar) untuk website.
+ * Mencakup link menu dan logo.
+ * @returns {string} String HTML navbar.
+ */
 export function createNavbar() {
   return `
     <nav class="navbar" id="navbar">
@@ -85,6 +111,10 @@ export function createNavbar() {
   `;
 }
 
+/**
+ * Menginisialisasi event listener untuk hamburger menu (mobile).
+ * Ini dieksekusi setiap kali Navbar di-render.
+ */
 export function setupMobileMenu() {
   const toggle = document.getElementById('mobile-toggle');
   const menu = document.getElementById('mobile-menu');
@@ -99,6 +129,10 @@ export function setupMobileMenu() {
   };
 }
 
+/**
+ * Menghasilkan komponen Footer.
+ * @returns {string} String HTML footer.
+ */
 export function createFooter() {
   return `
     <footer class="footer" id="contact">
@@ -159,7 +193,12 @@ export function createFooter() {
   `;
 }
 
-// Generate a simple QR code pattern using canvas
+/**
+ * Menghasilkan simulasi grafis QR Code pada elemen canvas HTML.
+ * Menggunakan jeda (setTimeout) untuk memastikan canvas sudah di-render.
+ * @param {string} canvasId - ID elemen `<canvas>`.
+ * @param {string} text - Teks/Data yang ingin dibuat QR (sebagai seed randomizer).
+ */
 export function generateQRCode(canvasId, text) {
   setTimeout(() => {
     const canvas = document.getElementById(canvasId);

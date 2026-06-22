@@ -2,6 +2,12 @@
    DATA — Barber Profiles
    ======================================== */
 
+/**
+ * Array yang berisi daftar staff/barber.
+ * Setiap object barber berisi informasi dasar, keahlian, gambar,
+ * serta daftar layanan yang bisa mereka lakukan beserta harga/ratingnya.
+ * @type {Array<Object>}
+ */
 export const barbers = [
   {
     id: 'onic-gilang',

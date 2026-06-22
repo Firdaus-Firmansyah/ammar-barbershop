@@ -26,10 +26,18 @@ const initialState = {
 let state = JSON.parse(JSON.stringify(initialState));
 const listeners = new Set();
 
+/**
+ * Mengambil state (data global) aplikasi saat ini secara utuh.
+ * @returns {Object} Object state aplikasi.
+ */
 export function getState() {
   return state;
 }
 
+/**
+ * Memperbarui state secara dangkal (shallow merge) dan memicu pembaruan ke semua subscriber.
+ * @param {Object|Function} updates - Object state baru atau fungsi yang mengembalikan state baru.
+ */
 export function setState(updates) {
   if (typeof updates === 'function') {
     state = { ...state, ...updates(state) };
@@ -39,6 +47,12 @@ export function setState(updates) {
   notify();
 }
 
+/**
+ * Memperbarui data state secara mendalam (nested) berdasarkan jalur (path).
+ * Contoh: updateNested('schedule.time', '10:00')
+ * @param {string} path - Jalur properti yang dipisahkan oleh titik (misal: 'user.name').
+ * @param {any} value - Nilai baru yang ingin disimpan.
+ */
 export function updateNested(path, value) {
   const keys = path.split('.');
   const newState = JSON.parse(JSON.stringify(state));
@@ -51,6 +65,12 @@ export function updateNested(path, value) {
   notify();
 }
 
+/**
+ * Mendaftarkan sebuah fungsi yang akan dipanggil setiap kali ada perubahan state.
+ * Digunakan agar komponen UI bisa melakukan render ulang otomatis.
+ * @param {Function} listener - Callback function.
+ * @returns {Function} Fungsi untuk berhenti berlangganan (unsubscribe).
+ */
 export function subscribe(listener) {
   listeners.add(listener);
   return () => listeners.delete(listener);
@@ -60,6 +80,10 @@ function notify() {
   listeners.forEach(fn => fn(state));
 }
 
+/**
+ * Mengatur ulang status booking ke awal, biasanya dilakukan setelah 
+ * checkout berhasil untuk membersihkan keranjang.
+ */
 export function resetBooking() {
   state = {
     ...state,
@@ -73,12 +97,21 @@ export function resetBooking() {
   notify();
 }
 
+/**
+ * Menghasilkan ID Booking acak yang unik (misal: AMR-2024-1234).
+ * @returns {string} String Booking ID.
+ */
 export function generateBookingId() {
   const year = new Date().getFullYear();
   const rand = String(Math.floor(Math.random() * 9999)).padStart(4, '0');
   return `AMR-${year}-${rand}`;
 }
 
+/**
+ * Menghitung total harga keseluruhan (Layanan Utama + Produk Tambahan/Addons).
+ * Akan memberikan diskon 5% otomatis jika pembayaran secara online.
+ * @returns {number} Total harga akhir.
+ */
 export function calculateTotal() {
   let total = 0;
   if (state.selectedService) {
@@ -94,6 +127,10 @@ export function calculateTotal() {
   return total;
 }
 
+/**
+ * Menghitung besarnya nominal diskon yang didapat.
+ * @returns {number} Nominal diskon (0 jika menggunakan cash).
+ */
 export function getDiscount() {
   if (state.payment.method !== 'qris' && state.payment.method !== 'ewallet') return 0;
   let total = 0;

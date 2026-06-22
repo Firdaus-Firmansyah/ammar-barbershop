@@ -5,18 +5,37 @@
 const routes = {};
 let currentPage = null;
 
+/**
+ * Mendaftarkan sebuah route baru beserta fungsi handler-nya.
+ * @param {string} path - URL path (misal: '/auth', '/services').
+ * @param {Function} handler - Fungsi yang merender komponen/halaman untuk route tersebut.
+ */
 export function registerRoute(path, handler) {
   routes[path] = handler;
 }
 
+/**
+ * Berpindah ke halaman lain dengan mengubah hash pada URL.
+ * Ini akan memicu event 'hashchange' yang ditangkap oleh router.
+ * @param {string} path - Path tujuan (misal: '/checkout').
+ */
 export function navigate(path) {
   window.location.hash = path;
 }
 
+/**
+ * Mengambil route/path saat ini dari URL (tanpa tanda #).
+ * @returns {string} Path saat ini, defaultnya adalah '/' jika kosong.
+ */
 export function getCurrentRoute() {
   return window.location.hash.slice(1) || '/';
 }
 
+/**
+ * Menginisialisasi router. Fungsi ini akan mendengarkan event 'hashchange'
+ * dari browser (ketika user klik back/forward atau pindah halaman),
+ * lalu merender ulang container dengan komponen yang sesuai.
+ */
 export function initRouter() {
   const handleRoute = async () => {
     const path = getCurrentRoute();

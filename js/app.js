@@ -12,7 +12,10 @@ import { SchedulePage } from './pages/SchedulePage.js';
 import { CheckoutPage } from './pages/CheckoutPage.js';
 import { SuccessPage } from './pages/SuccessPage.js';
 
-// Register all routes
+/**
+ * Mendaftarkan semua route/halaman pada aplikasi.
+ * '/' adalah route default untuk Landing Page.
+ */
 registerRoute('/', LandingPage);
 registerRoute('/auth', AuthPage);
 registerRoute('/services', ServicePage);
@@ -21,7 +24,10 @@ registerRoute('/schedule', SchedulePage);
 registerRoute('/checkout', CheckoutPage);
 registerRoute('/success', SuccessPage);
 
-// Initialize the router
+/**
+ * Menginisialisasi router sehingga aplikasi mulai mendengarkan
+ * perubahan URL (hash) dan merender halaman pertama.
+ */
 initRouter();
 
 // Log startup
