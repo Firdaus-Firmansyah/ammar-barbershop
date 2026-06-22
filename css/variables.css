@@ -1,0 +1,119 @@
+/* ========================================
+   DESIGN TOKENS — Ammar Barbershop
+   ======================================== */
+
+:root {
+  /* Background Colors */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #222222;
+  --bg-elevated: #2a2a2a;
+  --bg-input: #333333;
+  --bg-card: #2a2a2a;
+  --bg-card-hover: #303030;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
+
+  /* Brand Colors — Gold/Bronze */
+  --gold-primary: #C59D5F;
+  --gold-hover: #D4AF6E;
+  --gold-dark: #A67C3D;
+  --gold-light: #E8D5B0;
+  --gold-glow: rgba(197, 157, 95, 0.3);
+  --gold-glow-strong: rgba(197, 157, 95, 0.5);
+
+  /* Text Colors */
+  --text-white: #FFFFFF;
+  --text-light: #E0E0E0;
+  --text-muted: #9CA3AF;
+  --text-dark: #1a1a1a;
+  --text-gold: #C59D5F;
+
+  /* Border Colors */
+  --border-subtle: #3a3a3a;
+  --border-medium: #4a4a4a;
+  --border-gold: #C59D5F;
+
+  /* State Colors */
+  --success: #C59D5F;
+  --success-bg: rgba(197, 157, 95, 0.15);
+  --disabled: #4a4a4a;
+  --disabled-text: #666666;
+  --error: #E74C3C;
+  --error-bg: rgba(231, 76, 60, 0.15);
+
+  /* Star Rating */
+  --star-gold: #F5C518;
+
+  /* Typography */
+  --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
+
+  /* Font Weights */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --shadow-gold: 0 4px 20px rgba(197, 157, 95, 0.3);
+  --shadow-gold-lg: 0 8px 32px rgba(197, 157, 95, 0.4);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+  --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Z-Index Scale */
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal-overlay: 500;
+  --z-modal: 600;
+  --z-tooltip: 700;
+  --z-navbar: 800;
+
+  /* Container */
+  --max-width: 1200px;
+  --max-width-sm: 480px;
+  --max-width-md: 768px;
+}
