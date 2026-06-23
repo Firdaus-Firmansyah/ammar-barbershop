@@ -309,11 +309,22 @@ function setupAuthInteractions() {
       }
 
       // Ambil data profil
-      const { data: profile } = await supabase
+      let { data: profile } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', data.user.id)
         .single();
+
+      // Jika user belum memiliki profil (misal daftar sebelum fitur ini ada)
+      if (!profile) {
+        const newProfile = {
+          id: data.user.id,
+          full_name: data.user.user_metadata?.full_name || data.user.email.split('@')[0],
+          role: 'user'
+        };
+        const { error: upsertErr } = await supabase.from('profiles').upsert(newProfile);
+        if (!upsertErr) profile = newProfile;
+      }
 
       updateNested('user.name', profile?.full_name || data.user.user_metadata?.full_name || '');
       updateNested('user.email', data.user.email || '');

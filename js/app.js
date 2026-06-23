@@ -50,11 +50,21 @@ async function restoreSession() {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
       const user = session.user;
-      const { data: profile } = await supabase
+      let { data: profile } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single();
+
+      if (!profile) {
+        const newProfile = {
+          id: user.id,
+          full_name: user.user_metadata?.full_name || user.email.split('@')[0],
+          role: 'user'
+        };
+        const { error: upsertErr } = await supabase.from('profiles').upsert(newProfile);
+        if (!upsertErr) profile = newProfile;
+      }
 
       updateNested('user.id', user.id);
       updateNested('user.name', profile?.full_name || user.user_metadata?.full_name || '');
