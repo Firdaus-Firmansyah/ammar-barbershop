@@ -60,7 +60,7 @@ export async function BookingHistoryPage() {
             <div style="font-size: 3rem; margin-bottom: var(--space-4);">📅</div>
             <h3 style="font-size: 1.25rem; margin-bottom: var(--space-2);">Belum ada booking</h3>
             <p style="color: var(--text-muted); margin-bottom: var(--space-6);">Anda belum merencanakan layanan apapun. Yuk, jadwalkan potongan rambut Anda sekarang!</p>
-            <a href="#/services" class="btn btn-primary">Booking Sekarang</a>
+            <a href="/services" class="btn btn-primary">Booking Sekarang</a>
           </div>
         ` : `
           <div style="display: flex; flex-direction: column; gap: var(--space-4);">

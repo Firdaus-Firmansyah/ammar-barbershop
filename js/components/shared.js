@@ -84,21 +84,21 @@ export function createNavbar() {
 
   const authBtn = isLoggedIn
     ? (state.user?.role === 'admin' 
-        ? `<a href="#/admin" class="btn btn-outline btn-sm" style="border-color: var(--gold-primary); color: var(--gold-primary); margin-right: var(--space-2);">Admin Panel</a>
+        ? `<a href="/admin" class="btn btn-outline btn-sm" style="border-color: var(--gold-primary); color: var(--gold-primary); margin-right: var(--space-2);">Admin Panel</a>
            <button class="btn btn-outline btn-sm" id="navbar-logout-btn" style="font-size: var(--text-xs);">Logout</button>`
         : `<span style="color: var(--gold-primary); font-size: var(--text-sm); margin-right: var(--space-2);">👤 ${userName}</span>
            <button class="btn btn-outline btn-sm" id="navbar-logout-btn" style="font-size: var(--text-xs);">Logout</button>`)
-    : `<a href="#/auth" class="btn btn-primary btn-sm" id="navbar-auth-btn">Login</a>`;
+    : `<a href="/auth" class="btn btn-primary btn-sm" id="navbar-auth-btn">Login</a>`;
 
   return `
     <nav class="navbar" id="navbar">
       <div class="navbar-inner">
-        <a href="#/" class="navbar-logo">
+        <a href="/" class="navbar-logo">
           ${createLogo(42)}
           <span class="navbar-logo-text">AMMAR</span>
         </a>
         <div class="navbar-links" id="navbar-links">
-          <a href="#/" class="navbar-link navbar-link--active" data-nav="home">Home</a>
+          <a href="/" class="navbar-link navbar-link--active" data-nav="home">Home</a>
           <a href="javascript:void(0)" class="navbar-link" data-nav="about" onclick="scrollToSection('about')">About Us</a>
           <a href="javascript:void(0)" class="navbar-link" data-nav="staff" onclick="scrollToSection('staff')">Staff Profiles</a>
           <a href="javascript:void(0)" class="navbar-link" data-nav="service" onclick="scrollToSection('services-section')">Service</a>
@@ -113,7 +113,7 @@ export function createNavbar() {
       <!-- Mobile menu -->
       <div class="navbar-mobile-menu" id="mobile-menu" style="display:none; background: var(--bg-secondary); padding: var(--space-4) var(--space-6); border-top: 1px solid var(--border-subtle);">
         <div style="display:flex; flex-direction:column; gap: var(--space-3);">
-          <a href="#/" class="navbar-link" onclick="closeMobileMenu()">Home</a>
+          <a href="/" class="navbar-link" onclick="closeMobileMenu()">Home</a>
           <a href="javascript:void(0)" class="navbar-link" onclick="scrollToSection('about'); closeMobileMenu()">About Us</a>
           <a href="javascript:void(0)" class="navbar-link" onclick="scrollToSection('staff'); closeMobileMenu()">Staff Profiles</a>
           <a href="javascript:void(0)" class="navbar-link" onclick="scrollToSection('services-section'); closeMobileMenu()">Service</a>

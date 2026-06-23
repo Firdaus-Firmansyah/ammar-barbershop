@@ -1,5 +1,5 @@
 /* ========================================
-   ROUTER — Hash-based SPA Router
+   ROUTER — HTML5 History API Router
    ======================================== */
 
 const routes = {};
@@ -15,66 +15,86 @@ export function registerRoute(path, handler) {
 }
 
 /**
- * Berpindah ke halaman lain dengan mengubah hash pada URL.
- * Ini akan memicu event 'hashchange' yang ditangkap oleh router.
+ * Berpindah ke halaman lain dengan HTML5 History API.
  * @param {string} path - Path tujuan (misal: '/checkout').
  */
 export function navigate(path) {
-  window.location.hash = path;
+  window.history.pushState({}, '', path);
+  handleRoute();
 }
 
 /**
- * Mengambil route/path saat ini dari URL (tanpa tanda #).
+ * Mengambil route/path saat ini dari URL.
  * @returns {string} Path saat ini, defaultnya adalah '/' jika kosong.
  */
 export function getCurrentRoute() {
-  return window.location.hash.slice(1) || '/';
+  return window.location.pathname || '/';
 }
 
 /**
- * Menginisialisasi router. Fungsi ini akan mendengarkan event 'hashchange'
- * dari browser (ketika user klik back/forward atau pindah halaman),
- * lalu merender ulang container dengan komponen yang sesuai.
+ * Handle perubahan route (render halaman).
+ */
+export async function handleRoute() {
+  const path = getCurrentRoute();
+  const handler = routes[path] || routes['/'];
+
+  if (!handler) return;
+
+  const app = document.getElementById('app');
+
+  // Page exit animation
+  if (currentPage) {
+    app.classList.add('page-exit');
+    await new Promise(r => setTimeout(r, 200));
+    app.classList.remove('page-exit');
+  }
+
+  // Clear and render new page
+  app.innerHTML = '';
+  const content = await handler();
+  if (typeof content === 'string') {
+    app.innerHTML = content;
+  } else if (content instanceof HTMLElement) {
+    app.appendChild(content);
+  }
+
+  // Page enter animation
+  app.classList.add('page-enter');
+  requestAnimationFrame(() => {
+    app.classList.remove('page-enter');
+    app.classList.add('page-enter-active');
+  });
+
+  setTimeout(() => {
+    app.classList.remove('page-enter-active');
+  }, 300);
+
+  currentPage = path;
+  window.scrollTo(0, 0);
+}
+
+/**
+ * Menginisialisasi router. Fungsi ini mendengarkan event 'popstate'
+ * dan melakukan intercept pada semua klik link (tag <a>).
  */
 export function initRouter() {
-  const handleRoute = async () => {
-    const path = getCurrentRoute();
-    const handler = routes[path] || routes['/'];
+  window.addEventListener('popstate', handleRoute);
+  window.addEventListener('load', handleRoute);
 
-    if (!handler) return;
+  // Global click listener to intercept internal links
+  document.body.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
 
-    const app = document.getElementById('app');
+    const href = link.getAttribute('href');
+    
+    // Ignore external links, or hash-only links for sections (e.g. href="#about")
+    if (!href || href.startsWith('http') || href.startsWith('javascript:')) return;
 
-    // Page exit animation
-    if (currentPage) {
-      app.classList.add('page-exit');
-      await new Promise(r => setTimeout(r, 200));
-      app.classList.remove('page-exit');
+    // Internal links that start with '/' (used to be '#/')
+    if (href.startsWith('/')) {
+      e.preventDefault();
+      navigate(href);
     }
-
-    // Clear and render new page
-    app.innerHTML = '';
-    const content = await handler();
-    if (typeof content === 'string') {
-      app.innerHTML = content;
-    } else if (content instanceof HTMLElement) {
-      app.appendChild(content);
-    }
-
-    // Page enter animation
-    app.classList.add('page-enter');
-    setTimeout(() => app.classList.remove('page-enter'), 500);
-
-    currentPage = path;
-
-    // Scroll to top
-    window.scrollTo(0, 0);
-
-    // Re-bind event listeners
-    const event = new CustomEvent('routeChanged', { detail: { path } });
-    document.dispatchEvent(event);
-  };
-
-  window.addEventListener('hashchange', handleRoute);
-  handleRoute(); // Initial render
+  });
 }

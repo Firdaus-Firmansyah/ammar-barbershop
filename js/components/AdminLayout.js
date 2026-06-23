@@ -190,19 +190,19 @@ export function AdminLayout(content, activeTab = 'dashboard') {
         </div>
         
         <nav class="admin-sidebar-nav">
-          <a href="#/admin" class="admin-nav-item ${activeTab === 'dashboard' ? 'admin-nav-item--active' : ''}">
+          <a href="/admin" class="admin-nav-item ${activeTab === 'dashboard' ? 'admin-nav-item--active' : ''}">
             📊 Dashboard
           </a>
-          <a href="#/admin/bookings" class="admin-nav-item ${activeTab === 'bookings' ? 'admin-nav-item--active' : ''}">
+          <a href="/admin/bookings" class="admin-nav-item ${activeTab === 'bookings' ? 'admin-nav-item--active' : ''}">
             📅 Bookings
           </a>
-          <a href="#/admin/services" class="admin-nav-item ${activeTab === 'services' ? 'admin-nav-item--active' : ''}">
+          <a href="/admin/services" class="admin-nav-item ${activeTab === 'services' ? 'admin-nav-item--active' : ''}">
             ✂️ Services
           </a>
-          <a href="#/admin/barbers" class="admin-nav-item ${activeTab === 'barbers' ? 'admin-nav-item--active' : ''}">
+          <a href="/admin/barbers" class="admin-nav-item ${activeTab === 'barbers' ? 'admin-nav-item--active' : ''}">
             👨‍💼 Barbers
           </a>
-          <a href="#/admin/products" class="admin-nav-item ${activeTab === 'products' ? 'admin-nav-item--active' : ''}">
+          <a href="/admin/products" class="admin-nav-item ${activeTab === 'products' ? 'admin-nav-item--active' : ''}">
             🧴 Products
           </a>
         </nav>

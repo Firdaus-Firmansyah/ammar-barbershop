@@ -25,7 +25,7 @@ export async function LandingPage() {
           Memberikan layanan yang ramah, profesional, dan berkualitas tinggi.
         </p>
         <div class="hero-buttons animate-fade-in-up stagger-3">
-          <a href="#/auth" class="btn btn-primary btn-lg">Booking Sekarang</a>
+          <a href="/auth" class="btn btn-primary btn-lg">Booking Sekarang</a>
           <a href="javascript:void(0)" onclick="scrollToSection('products-section')" class="btn btn-outline btn-lg">Beli Produk</a>
         </div>
       </div>
@@ -107,8 +107,8 @@ export async function LandingPage() {
           `).join('')}
         </div>
         <div style="text-align: center; margin-top: var(--space-8); display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
-          <a href="#/auth" class="btn btn-primary">Booking Sekarang</a>
-          <a href="#/booking-history" class="btn btn-outline">Jadwal Booking Saya</a>
+          <a href="/auth" class="btn btn-primary">Booking Sekarang</a>
+          <a href="/booking-history" class="btn btn-outline">Jadwal Booking Saya</a>
         </div>
       </div>
     </section>
@@ -141,7 +141,7 @@ export async function LandingPage() {
     <section class="cta-banner">
       <div class="container">
         <h3>Ready to get started?</h3>
-        <a href="#/auth" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="/auth" class="btn btn-primary btn-lg">Get Started</a>
       </div>
     </section>
 

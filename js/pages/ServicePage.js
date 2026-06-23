@@ -54,7 +54,7 @@ export async function ServicePage() {
         </div>
         
         <div style="text-align: center; margin-top: var(--space-8); display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
-          <a href="#/booking-history" class="btn btn-outline" style="border-color: var(--gold-primary); color: var(--gold-primary);">📅 Lihat Jadwal Booking Saya</a>
+          <a href="/booking-history" class="btn btn-outline" style="border-color: var(--gold-primary); color: var(--gold-primary);">📅 Lihat Jadwal Booking Saya</a>
         </div>
       </div>
 
