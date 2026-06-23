@@ -83,8 +83,11 @@ export function createNavbar() {
   const userName = state.user?.name || '';
 
   const authBtn = isLoggedIn
-    ? `<span style="color: var(--gold-primary); font-size: var(--text-sm); margin-right: var(--space-2);">👤 ${userName}</span>
-       <button class="btn btn-outline btn-sm" id="navbar-logout-btn" style="font-size: var(--text-xs);">Logout</button>`
+    ? (state.user?.role === 'admin' 
+        ? `<a href="#/admin" class="btn btn-outline btn-sm" style="border-color: var(--gold-primary); color: var(--gold-primary); margin-right: var(--space-2);">Admin Panel</a>
+           <button class="btn btn-outline btn-sm" id="navbar-logout-btn" style="font-size: var(--text-xs);">Logout</button>`
+        : `<span style="color: var(--gold-primary); font-size: var(--text-sm); margin-right: var(--space-2);">👤 ${userName}</span>
+           <button class="btn btn-outline btn-sm" id="navbar-logout-btn" style="font-size: var(--text-xs);">Logout</button>`)
     : `<a href="#/auth" class="btn btn-primary btn-sm" id="navbar-auth-btn">Login</a>`;
 
   return `
