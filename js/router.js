@@ -54,7 +54,7 @@ export function initRouter() {
 
     // Clear and render new page
     app.innerHTML = '';
-    const content = handler();
+    const content = await handler();
     if (typeof content === 'string') {
       app.innerHTML = content;
     } else if (content instanceof HTMLElement) {

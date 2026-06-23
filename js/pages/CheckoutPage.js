@@ -5,10 +5,11 @@
 import { createLogo, createProgressBar, createBackButton } from '../components/shared.js';
 import { getState, setState, calculateTotal, getDiscount, generateBookingId, updateNested } from '../state.js';
 import { formatPrice } from '../data/services.js';
-import { upsellProducts } from '../data/products.js';
+import { fetchProducts, upsellProducts } from '../data/products.js';
 import { navigate } from '../router.js';
 
-export function CheckoutPage() {
+export async function CheckoutPage() {
+  await fetchProducts();
   const state = getState();
   const service = state.selectedService;
   const barber = state.selectedBarber;

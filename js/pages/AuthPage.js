@@ -1,14 +1,27 @@
 /* ========================================
    AUTH PAGE — Login / Sign Up
+   Terhubung dengan Supabase Auth API
    ======================================== */
 
 import { createLogo, createBackButton } from '../components/shared.js';
 import { getState, updateNested } from '../state.js';
 import { navigate } from '../router.js';
+import { supabase } from '../supabaseClient.js';
 
+/**
+ * Halaman Autentikasi (Login & Sign Up).
+ * Menggunakan Supabase Auth untuk register dan login dengan Email + Password.
+ * Setelah berhasil login, user diarahkan ke halaman pemilihan service.
+ */
 export function AuthPage() {
   const state = getState();
-  
+
+  // Jika user sudah login, langsung arahkan ke services
+  if (state.user.isLoggedIn) {
+    setTimeout(() => navigate('/services'), 0);
+    return '<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; color: var(--text-muted);">Redirecting...</div>';
+  }
+
   const html = `
     <div class="auth-page">
       <div style="position: absolute; top: var(--space-6); left: var(--space-6);">
@@ -23,6 +36,9 @@ export function AuthPage() {
         <h2 class="auth-title">Sign Up</h2>
         <p class="auth-subtitle">Masukkan detail Anda untuk membuat akun Anda</p>
 
+        <!-- Error/Success Message -->
+        <div id="auth-message" style="display:none; padding: var(--space-3); border-radius: var(--radius-md); margin-bottom: var(--space-4); font-size: var(--text-sm); text-align:center;"></div>
+
         <!-- Auth Tabs -->
         <div class="auth-tabs">
           <button class="auth-tab auth-tab--active" id="tab-signup" data-tab="signup">Sign Up</button>
@@ -33,7 +49,7 @@ export function AuthPage() {
         <form id="auth-form" autocomplete="off">
           <div id="form-content">
             <!-- Sign Up Fields -->
-            <div class="input-group">
+            <div class="input-group" id="name-group">
               <input type="text" class="input-field" id="input-name" placeholder="Masukkan nama lengkap" required />
             </div>
             
@@ -42,11 +58,16 @@ export function AuthPage() {
             </div>
             
             <div class="input-group">
-              <input type="password" class="input-field" id="input-password" placeholder="Kata sandi" required />
+              <input type="password" class="input-field" id="input-password" placeholder="Kata sandi (min. 6 karakter)" required minlength="6" />
             </div>
             
             <div class="input-group" id="confirm-password-group">
               <input type="password" class="input-field" id="input-confirm-password" placeholder="Konfirmasi kata sandi" />
+            </div>
+
+            <!-- Phone Number -->
+            <div class="input-group" id="phone-group">
+              <input type="tel" class="input-field" id="input-phone" placeholder="Nomor WhatsApp (08xxxxxxxxxx)" />
             </div>
 
             <!-- Gender Selection (INLINE - UX FIX) -->
@@ -73,7 +94,7 @@ export function AuthPage() {
 
           <!-- Buttons (GOLD CTA - UX FIX) -->
           <div class="auth-buttons">
-            <button type="submit" class="btn btn-primary btn-block" id="btn-submit">Kirim</button>
+            <button type="submit" class="btn btn-primary btn-block" id="btn-submit">Daftar</button>
             <button type="button" class="btn btn-outline btn-block" id="btn-cancel">Batal</button>
           </div>
         </form>
@@ -113,6 +134,24 @@ export function AuthPage() {
   return html;
 }
 
+function showMessage(text, isError = true) {
+  const msgEl = document.getElementById('auth-message');
+  if (!msgEl) return;
+  msgEl.textContent = text;
+  msgEl.style.display = 'block';
+  msgEl.style.background = isError ? 'rgba(239, 68, 68, 0.15)' : 'rgba(34, 197, 94, 0.15)';
+  msgEl.style.color = isError ? '#ef4444' : '#22c55e';
+  msgEl.style.border = isError ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(34, 197, 94, 0.3)';
+}
+
+function setLoading(isLoading) {
+  const btn = document.getElementById('btn-submit');
+  if (!btn) return;
+  btn.disabled = isLoading;
+  btn.style.opacity = isLoading ? '0.6' : '1';
+  btn.textContent = isLoading ? 'Loading...' : (btn.dataset.mode === 'login' ? 'Masuk' : 'Daftar');
+}
+
 function setupAuthInteractions() {
   let isSignUp = true;
   let selectedGender = '';
@@ -122,21 +161,27 @@ function setupAuthInteractions() {
   const tabLogin = document.getElementById('tab-login');
   const confirmGroup = document.getElementById('confirm-password-group');
   const genderGroup = document.getElementById('gender-group');
+  const nameGroup = document.getElementById('name-group');
+  const phoneGroup = document.getElementById('phone-group');
   const authTitle = document.querySelector('.auth-title');
   const authSubtitle = document.querySelector('.auth-subtitle');
   const toggleText = document.getElementById('auth-toggle-text');
   const btnSubmit = document.getElementById('btn-submit');
+  const msgEl = document.getElementById('auth-message');
 
   function switchToSignUp() {
     isSignUp = true;
     tabSignup?.classList.add('auth-tab--active');
     tabLogin?.classList.remove('auth-tab--active');
+    if (nameGroup) nameGroup.style.display = '';
     if (confirmGroup) confirmGroup.style.display = '';
     if (genderGroup) genderGroup.style.display = '';
+    if (phoneGroup) phoneGroup.style.display = '';
     if (authTitle) authTitle.textContent = 'Sign Up';
     if (authSubtitle) authSubtitle.textContent = 'Masukkan detail Anda untuk membuat akun Anda';
     if (toggleText) toggleText.innerHTML = 'Sudah memiliki akun? <a href="#" id="auth-toggle-link" style="color: var(--gold-primary); font-weight: 600;">Masuk</a>';
-    if (btnSubmit) btnSubmit.textContent = 'Kirim';
+    if (btnSubmit) { btnSubmit.textContent = 'Daftar'; btnSubmit.dataset.mode = 'signup'; }
+    if (msgEl) msgEl.style.display = 'none';
     rebindToggle();
   }
 
@@ -144,12 +189,15 @@ function setupAuthInteractions() {
     isSignUp = false;
     tabLogin?.classList.add('auth-tab--active');
     tabSignup?.classList.remove('auth-tab--active');
+    if (nameGroup) nameGroup.style.display = 'none';
     if (confirmGroup) confirmGroup.style.display = 'none';
     if (genderGroup) genderGroup.style.display = 'none';
+    if (phoneGroup) phoneGroup.style.display = 'none';
     if (authTitle) authTitle.textContent = 'Login';
     if (authSubtitle) authSubtitle.textContent = 'Masuk ke akun Anda';
     if (toggleText) toggleText.innerHTML = 'Belum punya akun? <a href="#" id="auth-toggle-link" style="color: var(--gold-primary); font-weight: 600;">Daftar</a>';
-    if (btnSubmit) btnSubmit.textContent = 'Masuk';
+    if (btnSubmit) { btnSubmit.textContent = 'Masuk'; btnSubmit.dataset.mode = 'login'; }
+    if (msgEl) msgEl.style.display = 'none';
     rebindToggle();
   }
 
@@ -178,24 +226,110 @@ function setupAuthInteractions() {
     });
   });
 
-  // Form submit
+  // Form submit — Connected to Supabase Auth
   const form = document.getElementById('auth-form');
-  form?.addEventListener('submit', (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const name = document.getElementById('input-name')?.value || '';
-    const email = document.getElementById('input-email')?.value || '';
+    const email = document.getElementById('input-email')?.value?.trim() || '';
+    const password = document.getElementById('input-password')?.value || '';
 
-    if (isSignUp && !selectedGender) {
-      alert('Silakan pilih gender Anda');
+    if (!email || !password) {
+      showMessage('Email dan password wajib diisi.');
       return;
     }
 
-    updateNested('user.name', name);
-    updateNested('user.email', email);
-    updateNested('user.gender', selectedGender);
-    updateNested('user.isLoggedIn', true);
+    setLoading(true);
 
-    navigate('/services');
+    if (isSignUp) {
+      // ========== SIGN UP ==========
+      const name = document.getElementById('input-name')?.value?.trim() || '';
+      const phone = document.getElementById('input-phone')?.value?.trim() || '';
+      const confirmPassword = document.getElementById('input-confirm-password')?.value || '';
+
+      if (!name) { showMessage('Nama lengkap wajib diisi.'); setLoading(false); return; }
+      if (!selectedGender) { showMessage('Silakan pilih gender Anda.'); setLoading(false); return; }
+      if (password !== confirmPassword) { showMessage('Password dan konfirmasi password tidak sama.'); setLoading(false); return; }
+      if (password.length < 6) { showMessage('Password minimal 6 karakter.'); setLoading(false); return; }
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+            phone_number: phone,
+            gender: selectedGender
+          }
+        }
+      });
+
+      if (error) {
+        showMessage(error.message);
+        setLoading(false);
+        return;
+      }
+
+      // Cek apakah Supabase mengirim email konfirmasi atau langsung confirmed
+      if (data.user && !data.user.confirmed_at && data.user.identities?.length === 0) {
+        showMessage('Email sudah terdaftar. Silakan login.', true);
+        setLoading(false);
+        return;
+      }
+
+      // Simpan profil ke tabel profiles
+      if (data.user) {
+        await supabase.from('profiles').upsert({
+          id: data.user.id,
+          full_name: name,
+          phone_number: phone,
+          gender: selectedGender === 'pria' ? 'Male' : 'Female'
+        });
+      }
+
+      // Update local state
+      updateNested('user.name', name);
+      updateNested('user.email', email);
+      updateNested('user.phone', phone);
+      updateNested('user.gender', selectedGender);
+      updateNested('user.isLoggedIn', true);
+      if (data.user) updateNested('user.id', data.user.id);
+
+      showMessage('Registrasi berhasil! Mengarahkan...', false);
+      setTimeout(() => navigate('/services'), 1000);
+
+    } else {
+      // ========== LOGIN ==========
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        showMessage(error.message === 'Invalid login credentials' ? 'Email atau password salah.' : error.message);
+        setLoading(false);
+        return;
+      }
+
+      // Ambil data profil
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+
+      updateNested('user.name', profile?.full_name || data.user.user_metadata?.full_name || '');
+      updateNested('user.email', data.user.email || '');
+      updateNested('user.phone', profile?.phone_number || data.user.user_metadata?.phone_number || '');
+      updateNested('user.gender', profile?.gender?.toLowerCase() === 'male' ? 'pria' : (profile?.gender?.toLowerCase() === 'female' ? 'wanita' : data.user.user_metadata?.gender || ''));
+      updateNested('user.isLoggedIn', true);
+      updateNested('user.id', data.user.id);
+
+      showMessage('Login berhasil! Mengarahkan...', false);
+      setTimeout(() => navigate('/services'), 1000);
+    }
+  });
+
+  // Google Sign-In
+  document.getElementById('btn-google')?.addEventListener('click', async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+    if (error) showMessage(error.message);
   });
 
   // Cancel button

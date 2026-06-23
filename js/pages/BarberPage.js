@@ -3,12 +3,13 @@
    ======================================== */
 
 import { createLogo, createProgressBar, createBackButton, createStars } from '../components/shared.js';
-import { barbers } from '../data/barbers.js';
+import { fetchBarbers, barbers } from '../data/barbers.js';
 import { formatPrice } from '../data/services.js';
 import { getState, setState } from '../state.js';
 import { navigate } from '../router.js';
 
-export function BarberPage() {
+export async function BarberPage() {
+  await fetchBarbers();
   const state = getState();
   const serviceName = state.selectedService?.name || 'Service';
   

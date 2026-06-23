@@ -3,11 +3,12 @@
    ======================================== */
 
 import { createLogo, createProgressBar, createBackButton } from '../components/shared.js';
-import { services, formatPrice } from '../data/services.js';
+import { fetchServices, services, formatPrice } from '../data/services.js';
 import { getState, setState } from '../state.js';
 import { navigate } from '../router.js';
 
-export function ServicePage() {
+export async function ServicePage() {
+  await fetchServices();
   const state = getState();
   
   const html = `

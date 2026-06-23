@@ -24,6 +24,17 @@ const initialState = {
 };
 
 let state = JSON.parse(JSON.stringify(initialState));
+
+// Load state from localStorage if exists
+try {
+  const savedState = localStorage.getItem('ammar_barbershop_state');
+  if (savedState) {
+    state = { ...state, ...JSON.parse(savedState) };
+  }
+} catch (e) {
+  console.error("Failed to load state from localStorage:", e);
+}
+
 const listeners = new Set();
 
 /**
@@ -77,6 +88,11 @@ export function subscribe(listener) {
 }
 
 function notify() {
+  try {
+    localStorage.setItem('ammar_barbershop_state', JSON.stringify(state));
+  } catch (e) {
+    console.error("Failed to save state to localStorage:", e);
+  }
   listeners.forEach(fn => fn(state));
 }
 

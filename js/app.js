@@ -11,6 +11,8 @@ import { BarberPage } from './pages/BarberPage.js';
 import { SchedulePage } from './pages/SchedulePage.js';
 import { CheckoutPage } from './pages/CheckoutPage.js';
 import { SuccessPage } from './pages/SuccessPage.js';
+import { supabase } from './supabaseClient.js';
+import { updateNested, getState } from './state.js';
 
 /**
  * Mendaftarkan semua route/halaman pada aplikasi.
@@ -25,6 +27,31 @@ registerRoute('/checkout', CheckoutPage);
 registerRoute('/success', SuccessPage);
 
 /**
+ * Cek sesi Supabase yang masih aktif saat pertama kali load.
+ * Jika user pernah login dan belum logout, state akan dipulihkan.
+ */
+async function restoreSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
+    const user = session.user;
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    updateNested('user.id', user.id);
+    updateNested('user.name', profile?.full_name || user.user_metadata?.full_name || '');
+    updateNested('user.email', user.email || '');
+    updateNested('user.phone', profile?.phone_number || user.user_metadata?.phone_number || '');
+    updateNested('user.gender', profile?.gender?.toLowerCase() === 'male' ? 'pria' : (profile?.gender?.toLowerCase() === 'female' ? 'wanita' : ''));
+    updateNested('user.isLoggedIn', true);
+  }
+}
+
+restoreSession();
+
+/**
  * Menginisialisasi router sehingga aplikasi mulai mendengarkan
  * perubahan URL (hash) dan merender halaman pertama.
  */
@@ -33,3 +60,4 @@ initRouter();
 // Log startup
 console.log('%c✂️ Ammar Barbershop', 'color: #C59D5F; font-size: 20px; font-weight: bold;');
 console.log('%cApp initialized successfully', 'color: #9CA3AF; font-size: 12px;');
+

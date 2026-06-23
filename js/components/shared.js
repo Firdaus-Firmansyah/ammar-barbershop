@@ -2,6 +2,8 @@
    SHARED COMPONENTS — Ammar Barbershop
    ======================================== */
 
+import { getState } from '../state.js';
+
 /**
  * Menghasilkan elemen gambar Logo Ammar Barbershop.
  * @param {number} height - Tinggi logo dalam pixel.
@@ -76,6 +78,15 @@ export function createStars(rating, size = 'sm') {
  * @returns {string} String HTML navbar.
  */
 export function createNavbar() {
+  const state = getState();
+  const isLoggedIn = state.user?.isLoggedIn;
+  const userName = state.user?.name || '';
+
+  const authBtn = isLoggedIn
+    ? `<span style="color: var(--gold-primary); font-size: var(--text-sm); margin-right: var(--space-2);">👤 ${userName}</span>
+       <button class="btn btn-outline btn-sm" id="navbar-logout-btn" style="font-size: var(--text-xs);">Logout</button>`
+    : `<a href="#/auth" class="btn btn-primary btn-sm" id="navbar-auth-btn">Login</a>`;
+
   return `
     <nav class="navbar" id="navbar">
       <div class="navbar-inner">
@@ -85,14 +96,14 @@ export function createNavbar() {
         </a>
         <div class="navbar-links" id="navbar-links">
           <a href="#/" class="navbar-link navbar-link--active" data-nav="home">Home</a>
-          <a href="#about" class="navbar-link" data-nav="about">About Us</a>
-          <a href="#staff" class="navbar-link" data-nav="staff">Staff Profiles</a>
-          <a href="#services-section" class="navbar-link" data-nav="service">Service</a>
-          <a href="#products-section" class="navbar-link" data-nav="products">Hair Products</a>
-          <a href="#contact" class="navbar-link" data-nav="contact">Contact Us</a>
+          <a href="javascript:void(0)" class="navbar-link" data-nav="about" onclick="scrollToSection('about')">About Us</a>
+          <a href="javascript:void(0)" class="navbar-link" data-nav="staff" onclick="scrollToSection('staff')">Staff Profiles</a>
+          <a href="javascript:void(0)" class="navbar-link" data-nav="service" onclick="scrollToSection('services-section')">Service</a>
+          <a href="javascript:void(0)" class="navbar-link" data-nav="products" onclick="scrollToSection('products-section')">Hair Products</a>
+          <a href="javascript:void(0)" class="navbar-link" data-nav="contact" onclick="scrollToSection('contact')">Contact Us</a>
         </div>
         <div class="navbar-actions">
-          <a href="#/auth" class="btn btn-primary btn-sm">Login</a>
+          ${authBtn}
           <button class="navbar-mobile-toggle" id="mobile-toggle" aria-label="Menu">☰</button>
         </div>
       </div>
@@ -100,11 +111,11 @@ export function createNavbar() {
       <div class="navbar-mobile-menu" id="mobile-menu" style="display:none; background: var(--bg-secondary); padding: var(--space-4) var(--space-6); border-top: 1px solid var(--border-subtle);">
         <div style="display:flex; flex-direction:column; gap: var(--space-3);">
           <a href="#/" class="navbar-link" onclick="closeMobileMenu()">Home</a>
-          <a href="#about" class="navbar-link" onclick="closeMobileMenu()">About Us</a>
-          <a href="#staff" class="navbar-link" onclick="closeMobileMenu()">Staff Profiles</a>
-          <a href="#services-section" class="navbar-link" onclick="closeMobileMenu()">Service</a>
-          <a href="#products-section" class="navbar-link" onclick="closeMobileMenu()">Hair Products</a>
-          <a href="#contact" class="navbar-link" onclick="closeMobileMenu()">Contact Us</a>
+          <a href="javascript:void(0)" class="navbar-link" onclick="scrollToSection('about'); closeMobileMenu()">About Us</a>
+          <a href="javascript:void(0)" class="navbar-link" onclick="scrollToSection('staff'); closeMobileMenu()">Staff Profiles</a>
+          <a href="javascript:void(0)" class="navbar-link" onclick="scrollToSection('services-section'); closeMobileMenu()">Service</a>
+          <a href="javascript:void(0)" class="navbar-link" onclick="scrollToSection('products-section'); closeMobileMenu()">Hair Products</a>
+          <a href="javascript:void(0)" class="navbar-link" onclick="scrollToSection('contact'); closeMobileMenu()">Contact Us</a>
         </div>
       </div>
     </nav>
@@ -127,6 +138,42 @@ export function setupMobileMenu() {
   window.closeMobileMenu = () => {
     if (menu) menu.style.display = 'none';
   };
+  // Global scroll-to-section helper
+  window.scrollToSection = (sectionId) => {
+    // If we're not on the landing page, navigate there first
+    const currentRoute = window.location.hash.slice(1) || '/';
+    if (currentRoute !== '/') {
+      window.location.hash = '/';
+      // Wait for page to render, then scroll
+      setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 400);
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  // Logout button handler
+  const logoutBtn = document.getElementById('navbar-logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      const { supabase } = await import('../supabaseClient.js');
+      const { updateNested, resetBooking } = await import('../state.js');
+      await supabase.auth.signOut();
+      updateNested('user.name', '');
+      updateNested('user.email', '');
+      updateNested('user.phone', '');
+      updateNested('user.gender', '');
+      updateNested('user.isLoggedIn', false);
+      updateNested('user.id', null);
+      resetBooking();
+      localStorage.removeItem('ammar_barbershop_state');
+      window.location.hash = '/';
+      window.location.reload();
+    });
+  }
 }
 
 /**

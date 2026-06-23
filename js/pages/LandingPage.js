@@ -3,11 +3,12 @@
    ======================================== */
 
 import { createNavbar, createFooter, createLogo, createStars, setupMobileMenu } from '../components/shared.js';
-import { services, formatPrice } from '../data/services.js';
-import { barbers } from '../data/barbers.js';
-import { products } from '../data/products.js';
+import { fetchServices, formatPrice, services } from '../data/services.js';
+import { fetchBarbers, barbers } from '../data/barbers.js';
+import { fetchProducts, products } from '../data/products.js';
 
-export function LandingPage() {
+export async function LandingPage() {
+  await Promise.all([fetchServices(), fetchBarbers(), fetchProducts()]);
   const html = `
     ${createNavbar()}
     
@@ -24,8 +25,8 @@ export function LandingPage() {
           Memberikan layanan yang ramah, profesional, dan berkualitas tinggi.
         </p>
         <div class="hero-buttons animate-fade-in-up stagger-3">
-          <a href="#/services" class="btn btn-primary btn-lg">Booking Sekarang</a>
-          <a href="#products-section" class="btn btn-outline btn-lg">Beli Produk</a>
+          <a href="#/auth" class="btn btn-primary btn-lg">Booking Sekarang</a>
+          <a href="javascript:void(0)" onclick="scrollToSection('products-section')" class="btn btn-outline btn-lg">Beli Produk</a>
         </div>
       </div>
     </section>
@@ -104,7 +105,7 @@ export function LandingPage() {
           `).join('')}
         </div>
         <div style="text-align: center; margin-top: var(--space-8); display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
-          <a href="#/services" class="btn btn-primary">Booking Sekarang</a>
+          <a href="#/auth" class="btn btn-primary">Booking Sekarang</a>
           <a href="#/booking-history" class="btn btn-outline">Jadwal Booking Saya</a>
         </div>
       </div>
