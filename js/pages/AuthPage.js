@@ -291,6 +291,7 @@ function setupAuthInteractions() {
       updateNested('user.email', email);
       updateNested('user.phone', phone);
       updateNested('user.gender', selectedGender);
+      updateNested('user.role', 'user');
       updateNested('user.isLoggedIn', true);
       if (data.user) updateNested('user.id', data.user.id);
 
@@ -318,11 +319,18 @@ function setupAuthInteractions() {
       updateNested('user.email', data.user.email || '');
       updateNested('user.phone', profile?.phone_number || data.user.user_metadata?.phone_number || '');
       updateNested('user.gender', profile?.gender?.toLowerCase() === 'male' ? 'pria' : (profile?.gender?.toLowerCase() === 'female' ? 'wanita' : data.user.user_metadata?.gender || ''));
+      updateNested('user.role', profile?.role || 'user');
       updateNested('user.isLoggedIn', true);
       updateNested('user.id', data.user.id);
 
       showMessage('Login berhasil! Mengarahkan...', false);
-      setTimeout(() => navigate('/services'), 1000);
+      
+      // If admin, navigate to admin panel
+      if (profile?.role === 'admin') {
+        setTimeout(() => navigate('/admin'), 1000);
+      } else {
+        setTimeout(() => navigate('/services'), 1000);
+      }
     }
   });
 

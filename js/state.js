@@ -4,10 +4,12 @@
 
 const initialState = {
   user: {
+    id: null,
     name: '',
     email: '',
     phone: '',
     gender: '',
+    role: 'user',
     isLoggedIn: false,
   },
   selectedService: null,

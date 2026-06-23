@@ -28,6 +28,19 @@ registerRoute('/checkout', CheckoutPage);
 registerRoute('/success', SuccessPage);
 registerRoute('/booking-history', BookingHistoryPage);
 
+// Admin Routes
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
+import { AdminBookingsPage } from './pages/admin/AdminBookingsPage.js';
+import { AdminServicesPage } from './pages/admin/AdminServicesPage.js';
+import { AdminBarbersPage } from './pages/admin/AdminBarbersPage.js';
+import { AdminProductsPage } from './pages/admin/AdminProductsPage.js';
+
+registerRoute('/admin', AdminDashboardPage);
+registerRoute('/admin/bookings', AdminBookingsPage);
+registerRoute('/admin/services', AdminServicesPage);
+registerRoute('/admin/barbers', AdminBarbersPage);
+registerRoute('/admin/products', AdminProductsPage);
+
 /**
  * Cek sesi Supabase yang masih aktif saat pertama kali load.
  * Jika user pernah login dan belum logout, state akan dipulihkan.
@@ -48,6 +61,7 @@ async function restoreSession() {
       updateNested('user.email', user.email || '');
       updateNested('user.phone', profile?.phone_number || user.user_metadata?.phone_number || '');
       updateNested('user.gender', profile?.gender?.toLowerCase() === 'male' ? 'pria' : (profile?.gender?.toLowerCase() === 'female' ? 'wanita' : ''));
+      updateNested('user.role', profile?.role || 'user');
       updateNested('user.isLoggedIn', true);
     }
   } catch (e) {
