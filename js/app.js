@@ -69,15 +69,19 @@ async function restoreSession() {
   }
 }
 
-restoreSession();
+async function initApp() {
+  await restoreSession();
+  
+  /**
+   * Menginisialisasi router sehingga aplikasi mulai mendengarkan
+   * perubahan URL (hash) dan merender halaman pertama.
+   */
+  initRouter();
 
-/**
- * Menginisialisasi router sehingga aplikasi mulai mendengarkan
- * perubahan URL (hash) dan merender halaman pertama.
- */
-initRouter();
+  // Log startup
+  console.log('%c✂️ Ammar Barbershop', 'color: #C59D5F; font-size: 20px; font-weight: bold;');
+  console.log('%cApp initialized successfully', 'color: #9CA3AF; font-size: 12px;');
+}
 
-// Log startup
-console.log('%c✂️ Ammar Barbershop', 'color: #C59D5F; font-size: 20px; font-weight: bold;');
-console.log('%cApp initialized successfully', 'color: #9CA3AF; font-size: 12px;');
+initApp();
 
