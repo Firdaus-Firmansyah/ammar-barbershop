@@ -75,7 +75,7 @@ export async function LandingPage() {
               <p style="font-size: var(--text-sm); color: var(--text-muted); line-height: 1.6;">${barber.description}</p>
               <div style="margin-top: var(--space-3);">
                 ${createStars(barber.rating)}
-                <span style="color: var(--text-muted); font-size: var(--text-xs); margin-left: var(--space-2);">${barber.reviewCount} reviews</span>
+                <span style="color: var(--text-muted); font-size: var(--text-xs); margin-left: var(--space-2);">${barber.review_count || 0} reviews</span>
               </div>
             </div>
           `).join('')}
@@ -99,7 +99,9 @@ export async function LandingPage() {
         <div class="services-landing-grid">
           ${services.map((service, i) => `
             <div class="service-landing-item animate-fade-in-up stagger-${i + 1}">
-              <div class="service-landing-icon">${service.icon}</div>
+              <div class="service-landing-icon" style="padding: 0; background: transparent; border: none; font-size: initial;">
+                <img src="${service.image || '/Image/Haircut.png'}" alt="${service.name}" style="width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));" />
+              </div>
               <span class="service-landing-label">${service.name}</span>
             </div>
           `).join('')}

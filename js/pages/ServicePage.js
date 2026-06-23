@@ -30,7 +30,9 @@ export async function ServicePage() {
             <div class="service-card animate-fade-in-up stagger-${i + 1} ${state.selectedService?.id === service.id ? 'service-card--selected' : ''}" 
                  data-service-id="${service.id}" 
                  id="service-${service.id}">
-              <div class="service-card-icon">${service.icon}</div>
+              <div class="service-card-icon" style="padding: 0; background: transparent; border: none; font-size: initial;">
+                <img src="${service.image || '/Image/Haircut.png'}" alt="${service.name}" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));" />
+              </div>
               <h4>${service.name}</h4>
               <div class="service-card-price">${formatPrice(service.price)}</div>
               
@@ -49,6 +51,10 @@ export async function ServicePage() {
               </div>
             </div>
           `).join('')}
+        </div>
+        
+        <div style="text-align: center; margin-top: var(--space-8); display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
+          <a href="#/booking-history" class="btn btn-outline" style="border-color: var(--gold-primary); color: var(--gold-primary);">📅 Lihat Jadwal Booking Saya</a>
         </div>
       </div>
 

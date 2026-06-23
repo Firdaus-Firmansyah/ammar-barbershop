@@ -28,6 +28,11 @@ export async function fetchBarbers() {
 
     // Gabungkan
     barbers = data.map(b => {
+      // FIX ONIC GILANG IMAGE AS REQUESTED
+      if (b.id === 'onic-gilang') {
+        b.image = '/Image/Staff 1.png';
+      }
+      
       let bs = bServices ? bServices.filter(s => s.barber_id === b.id) : [];
       return {
         ...b,

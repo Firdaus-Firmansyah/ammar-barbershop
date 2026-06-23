@@ -11,6 +11,7 @@ import { BarberPage } from './pages/BarberPage.js';
 import { SchedulePage } from './pages/SchedulePage.js';
 import { CheckoutPage } from './pages/CheckoutPage.js';
 import { SuccessPage } from './pages/SuccessPage.js';
+import { BookingHistoryPage } from './pages/BookingHistoryPage.js';
 import { supabase } from './supabaseClient.js';
 import { updateNested, getState } from './state.js';
 
@@ -25,6 +26,7 @@ registerRoute('/barbers', BarberPage);
 registerRoute('/schedule', SchedulePage);
 registerRoute('/checkout', CheckoutPage);
 registerRoute('/success', SuccessPage);
+registerRoute('/booking-history', BookingHistoryPage);
 
 /**
  * Cek sesi Supabase yang masih aktif saat pertama kali load.
