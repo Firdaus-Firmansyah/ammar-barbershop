@@ -31,21 +31,25 @@ registerRoute('/success', SuccessPage);
  * Jika user pernah login dan belum logout, state akan dipulihkan.
  */
 async function restoreSession() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session?.user) {
-    const user = session.user;
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const user = session.user;
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
 
-    updateNested('user.id', user.id);
-    updateNested('user.name', profile?.full_name || user.user_metadata?.full_name || '');
-    updateNested('user.email', user.email || '');
-    updateNested('user.phone', profile?.phone_number || user.user_metadata?.phone_number || '');
-    updateNested('user.gender', profile?.gender?.toLowerCase() === 'male' ? 'pria' : (profile?.gender?.toLowerCase() === 'female' ? 'wanita' : ''));
-    updateNested('user.isLoggedIn', true);
+      updateNested('user.id', user.id);
+      updateNested('user.name', profile?.full_name || user.user_metadata?.full_name || '');
+      updateNested('user.email', user.email || '');
+      updateNested('user.phone', profile?.phone_number || user.user_metadata?.phone_number || '');
+      updateNested('user.gender', profile?.gender?.toLowerCase() === 'male' ? 'pria' : (profile?.gender?.toLowerCase() === 'female' ? 'wanita' : ''));
+      updateNested('user.isLoggedIn', true);
+    }
+  } catch (e) {
+    console.warn("Session restore failed:", e.message);
   }
 }
 
